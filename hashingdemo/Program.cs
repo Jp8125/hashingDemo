@@ -43,7 +43,7 @@ static void Main(String[] args)
 
     public bool VerifyHash(string password, string storedHash, string storedSalt)
     {
-        using (var hmac = new HMACSHA256(Convert.FromBase64String(storedSalt)))
+        using (var hmac = new HMACSHA256(Convert.FromBase64String()))
         {
             var computedHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(password + storedSalt)));
             return storedHash == computedHash;
