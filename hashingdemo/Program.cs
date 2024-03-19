@@ -35,17 +35,20 @@ static void Main(String[] args)
     {
         using (var hmac = new HMACSHA256())
         {
+            var hamcForhash = new HMACSHA256(hmac.Key);
             var salt = Convert.ToBase64String(hmac.Key);
-            var hash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(password + salt)));
+            var hash = Convert.ToBase64String(hamcForhash.ComputeHash(Encoding.UTF8.GetBytes(password)));
             return (hash, salt);
         }
     }
 
     public bool VerifyHash(string password, string storedHash, string storedSalt)
     {
-        using (var hmac = new HMACSHA256(Convert.FromBase64String()))
+        using (var hmac = new HMACSHA256(Convert.FromBase64String(storedSalt)))
         {
-            var computedHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(password + storedSalt)));
+            var computedHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(password)));
+            Console.WriteLine("hash: " + computedHash);
+
             return storedHash == computedHash;
         }
     }
